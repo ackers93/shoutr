@@ -1,6 +1,10 @@
-<div>
+<div style="border: 1px solid red; margin-bottom: 20px; padding: 5px;">
   <%= link_to shout.username, shout.user %>
-  <%= shout.content.body %>
+  <% if shout.content.is_a?(TextShout) %>
+    <p><%= shout.content.body %></p>
+  <% elsif shout.content.is_a?(PhotoShout) %>
+    <p><%= image_tag shout.content.image.variant(resize: '100x100') %></p>
+  <% end %>
   <%= link_to shout do  %>
   <%= time_ago_in_words(shout.created_at) %> ago
 <% end %>

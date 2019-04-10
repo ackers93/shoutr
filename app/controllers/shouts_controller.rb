@@ -4,29 +4,39 @@ class ShoutsController < ApplicationController
   end
 
   def create
-  shout = current_user.shouts.create(shout_params)
+    shout = current_user.shouts.create(content: content_from_params)
     redirect_to root_path, redirects_options_for(shout)
   end
 
   private
 
-  def shout_params
-    { content: content_from_params }
-  end
-
   def content_from_params
-    TextShout.new(content_params)
+    case params[:shout][:content_type]
+    when "TextShout"
+      shout = TextShout.new(text_shout_content_params)
+    when "PhotoShout"
+      shout = PhotoShout.new(photo_shout_content_params)
+      shout.image.attach(photo_shout_content_params[:image])
+    end
+    unless shout.save
+      raise 'shout was not able to save. that is not expected.'
+    end
+    shout
+ end
+
+  def text_shout_content_params
+    params.require(:shout).require(:content).permit(:body)
   end
 
-  def content_params
-    params.require(:shout).require(:content).permit(:body)
+  def photo_shout_content_params
+    params.require(:shout).require(:content).permit(:image)
   end
 
   def redirects_options_for(shout)
     if shout.persisted?
-    { notice: "Shouted succesfully!" }
-  else
-    {alert: "Could not shout."}
+    { notice: "Shouted successfully!" }
+    else
+      {alert: "Could not shout."}
+    end
   end
-end
 end
