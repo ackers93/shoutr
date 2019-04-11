@@ -4,13 +4,14 @@
   <%= link_to shout.username, shout.user %>
   <br>
   <hr color="#426C78" size=5>
-  <% if shout.content.is_a?(TextShout) %>
-    <p><%= shout.content.body %></p>
-  <% elsif shout.content.is_a?(PhotoShout) %>
-    <p><%= image_tag shout.content.image.variant(resize: '100x100') %></p>
-  <% end %>
+    <% if shout.content.is_a?(TextShout) %>
+      <p><%= shout.content.body %></p>
+    <% elsif shout.content.is_a?(PhotoShout) %>
+      <p><%= image_tag shout.content.image.variant(resize: '100x100') %></p>
+    <% end %>
   <%= link_to shout do  %>
   <%= time_ago_in_words(shout.created_at) %> ago
-<% end %>
+  <% end %>
+  <%= like_button(shout) %>
 </div>
 </body>
